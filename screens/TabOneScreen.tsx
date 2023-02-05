@@ -1,15 +1,44 @@
-import { StyleSheet } from 'react-native';
+import { Button, FlatList, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
+import { useState, useEffect } from 'react';
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    try{
+      const response = await fetch('http://192.168.0.107:8080/product/getProducts');
+      console.log(response);
+      const data = await response.json();
+      setData(data.data);
+      console.log(data.data);
+    } catch (error: any) {
+      console.log(JSON.stringify(error));
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <FlatList 
+        data={data}
+        renderItem={({item}) => <Text>{item.productName}</Text>}
+        keyExtractor={item => item.id}
+
+      />
+ 
+      <Button title='Clique' onPress={() => {
+        getData()
+      }}/>
     </View>
   );
 }
