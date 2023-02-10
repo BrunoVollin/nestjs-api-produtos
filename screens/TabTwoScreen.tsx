@@ -15,6 +15,7 @@ export default function TabTwoScreen() {
         productName: text,
       })
       .then(function (response) {
+        setText("");
         console.log(response);
         Alert.alert("Produto cadastrado com sucesso!");
       })
